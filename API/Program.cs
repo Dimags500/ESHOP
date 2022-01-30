@@ -1,4 +1,5 @@
 using API.Errors;
+using API.Helpers;
 using API.Middleware;
 using Core.Interfaces;
 using Infrastructure.Data;
@@ -28,6 +29,7 @@ builder.Services.AddScoped(typeof(IGenericRepository<>), (typeof(GenericReposito
 
 var cs = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<StoreContext>(x => x.UseSqlite(cs));
+builder.Services.AddAutoMapper(typeof(MappingProfiles));
 
 builder.Services.Configure<ApiBehaviorOptions>(options => 
 {
@@ -66,6 +68,7 @@ app.UseSwaggerUI();
 app.UseStatusCodePagesWithReExecute("/errors/{0}"); 
 app.UseHttpsRedirection();
 
+app.UseStaticFiles();
 app.UseAuthorization();
 
 app.MapControllers();
