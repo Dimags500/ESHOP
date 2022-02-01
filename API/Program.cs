@@ -14,8 +14,27 @@ using Microsoft.Extensions.Logging;
 using System.Linq;
 
 var builder = WebApplication.CreateBuilder(args);
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 // Add services to the container.
+
+//builder.Services.AddCors(options =>
+//{
+//    options.AddPolicy("CorsPolicy", policy =>
+//    {
+//        policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200/");
+//    });
+
+//});
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(MyAllowSpecificOrigins,
+                          builder =>
+                          {
+                              builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+                          });
+});
 
 
 
@@ -30,6 +49,14 @@ builder.Services.AddScoped(typeof(IGenericRepository<>), (typeof(GenericReposito
 var cs = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<StoreContext>(x => x.UseSqlite(cs));
 builder.Services.AddAutoMapper(typeof(MappingProfiles));
+//builder.Services.AddCors(options =>
+//{
+//    options.AddPolicy("CorsPolicy" , policy => 
+//    { 
+//        policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200/");
+//    });
+
+//});
 
 builder.Services.Configure<ApiBehaviorOptions>(options => 
 {
@@ -61,14 +88,15 @@ if (app.Environment.IsDevelopment())
 {
    
 }
-
 app.UseSwagger();
 app.UseSwaggerUI();
-
 app.UseStatusCodePagesWithReExecute("/errors/{0}"); 
 app.UseHttpsRedirection();
 
+
 app.UseStaticFiles();
+app.UseCors(MyAllowSpecificOrigins);
+
 app.UseAuthorization();
 
 app.MapControllers();
