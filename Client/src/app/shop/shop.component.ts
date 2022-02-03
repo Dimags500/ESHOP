@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Observable } from 'rxjs';
 import { IBrand } from '../shared/models/brands';
 import { IProduct } from '../shared/models/product';
 import { IType } from '../shared/models/productType';
+import { ShopParams } from '../shared/models/shopParams';
 import { ShopService } from './shop.service';
 
 @Component({
@@ -11,13 +12,16 @@ import { ShopService } from './shop.service';
   styleUrls: ['./shop.component.scss']
 })
 export class ShopComponent implements OnInit {
+@ViewChild('search' , {static: true }) searchTerm : ElementRef ;
+
+
 products : IProduct[];
 types  : IType[];
 brands : IBrand [];
+shopParams = new ShopParams();
+totalCount : number ;
 
-brandIdSelected = 0;
-typeIdSelected = 0;
-sortSelected = 'name';
+
 sortOptions = [
   {name:'ABC' , value : 'name'} ,
   {name: 'Price : Low to High' , value : 'priceAsc' } ,
@@ -33,8 +37,11 @@ sortOptions = [
   }
 
   getProducts(){
-    this.shopService.getProducts( this.brandIdSelected , this.typeIdSelected , this.sortSelected).subscribe( response => {
+    this.shopService.getProducts( this.shopParams).subscribe( response => {
       this.products = response.data;
+      this.shopParams.pageNumber = response.pageIndex ;
+      this.shopParams.pageSize = response.pageSize ;
+      this.totalCount = response.count ;
     }, error =>{
       console.log(error);
       
@@ -55,18 +62,34 @@ sortOptions = [
     }
 
     onBrandSelected(brandId : number){
-      this.brandIdSelected = brandId ;
+      this.shopParams.brandId = brandId ;
       this.getProducts();
     }
 
     onTypeSelected(typeId : number){
-      this.typeIdSelected = typeId ;
+      this.shopParams.typeId = typeId ;
       this.getProducts();
     }
 
     onSortSelected(sort: string){
-      this.sortSelected = sort ;
+      this.shopParams.sort = sort ;
       this.getProducts()
+    }
+
+    onPageChanged(event : any){
+      this.shopParams.pageNumber = event ; 
+      this.getProducts() ;
+    }
+
+
+    onSearch() {
+      this.shopParams.search = this.searchTerm.nativeElement.value ;
+      this.getProducts();
+    }
+    onReset(){
+      this.searchTerm.nativeElement.value = ' ' ;
+      this.shopParams = new ShopParams() ;
+      this.getProducts();
     }
 
 }
