@@ -1,11 +1,15 @@
 <div class="d-flex flex-column flex-md-row align-items-center  justify-content-between 
     p-3 px-md-4 mb-3 bg-white border-bottom box-shadow fixed-top pb-1">
-    <img src="../../assets/images/logo.png" style="max-height: 70px ;" alt="logo">
+    <img routerLink="/" src="../../assets/images/logo.png" style="max-height: 70px ;" alt="logo" class="logo">
     <nav class="my-2 my-md-0 mr-md-3 text-uppercase  " style="font-size: larger; ">
-        <a class="p-2  nav-link-color" href="#" style="text-decoration: none; ">Home</a>
-        <a class="p-2  nav-link-color" href="#" style="text-decoration: none;">Shop</a>
-        <a class="p-2  nav-link-color" href="#" style="text-decoration: none;">Contact</a>
-        <a class="p-2  nav-link-color" href="#" style="text-decoration: none; ">Pricing</a>
+        <a class="p-2  nav-link-color" style="text-decoration: none; " [routerLink]="['/']"
+            routerLinkActive="active">Home</a>
+        <a class="p-2  nav-link-color" routerLink="/shop" style="text-decoration: none;"
+            routerLinkActive="active">Shop</a>
+        <a class="p-2  nav-link-color" routerLink="/contact" style="text-decoration: none;"
+            routerLinkActive="active">Contact</a>
+        <a class="p-2  nav-link-color" routerLink="/pricing" style="text-decoration: none; "
+            routerLinkActive="active">Pricing</a>
     </nav>
     <div class="d-flex align-items-center  ">
         <a class="position-relative">
