@@ -12,9 +12,9 @@
             routerLinkActive="active">Pricing</a>
     </nav>
     <div class="d-flex align-items-center  ">
-        <a class="position-relative">
+        <a routerLink="/basket" class="position-relative">
             <i class="fa fa-shopping-cart fa-2x mx-3 text-dark mx-4"></i>
-            <div class="cart-no ">5</div>
+            <div *ngIf="(basket$ | async) as basket" class="cart-no ">{{basket.items.length}}</div>
         </a>
         <a class="btn btn-outline-primary mx-1" href="#">Sign up</a>
         <a class="btn btn-outline-secondary mx-1 " href="#">Log in</a>

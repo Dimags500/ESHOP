@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Linq;
+using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -43,12 +44,27 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddScoped<IProductRepository, ProducRepository>();
-builder.Services.AddScoped(typeof(IGenericRepository<>), (typeof(GenericRepository<>))); 
 
+builder.Services.AddScoped<IProductRepository, ProducRepository>();
+builder.Services.AddScoped(typeof(IGenericRepository<>), (typeof(GenericRepository<>)));
+
+//conection strings
 var cs = builder.Configuration.GetConnectionString("DefaultConnection");
+var csRedis = builder.Configuration.GetConnectionString("Redis");
+
+// basket reository & Redis config  
+builder.Services.AddSingleton<IConnectionMultiplexer>(c =>
+{
+    var config = ConfigurationOptions.Parse(csRedis, true);
+    return ConnectionMultiplexer.Connect(config); 
+
+});
+builder.Services.AddScoped<IBasketRepository, BasketRepository>();
+
+
 builder.Services.AddDbContext<StoreContext>(x => x.UseSqlite(cs));
 builder.Services.AddAutoMapper(typeof(MappingProfiles));
+
 //builder.Services.AddCors(options =>
 //{
 //    options.AddPolicy("CorsPolicy" , policy => 
