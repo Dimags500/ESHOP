@@ -1,4 +1,4 @@
-<div class="container mt-5">
+<div class="container mt-2">
     <div *ngIf="(basket$ | async) === null">
         <p>No items in basket </p>
     </div>
@@ -6,13 +6,13 @@
 
     <div *ngIf="(basket$ | async) as basket">
         <div class="pb-5">
-            <div class="container">
+            <div class="container ">
                 <div class="row">
                     <div class="col-12 py-5 mb-1">
                         <div class="table-responsive">
                             <table class="table">
 
-                                <head>
+                                <thead>
                                     <tr>
                                         <th class="border-0 bg-light" scope="col">
                                             <div class="p-2 px-3 text-uppercase">Product</div>
@@ -30,7 +30,7 @@
                                             <div class="p-2  text-uppercase">Remove</div>
                                         </th>
                                     </tr>
-                                </head>
+                                </thead>
                                 <tbody>
                                     <tr *ngFor="let item of basket.items">
                                         <th scope="row">
@@ -49,11 +49,13 @@
                                         <td class="align-middle"> <strong>{{item.price | currency}}</strong> </td>
                                         <td class="align-middle">
                                             <div class="d-flex align-items-center">
-                                                <i class="fa fa-minus-circle text-warning mx-1"
+                                                <i (click)="decrementItemQuantity(item)"
+                                                    class="fa fa-minus-circle text-warning mx-1"
                                                     style="cursor: pointer; font-size: 2em;"></i>
                                                 <span class="font-weight-bold"
                                                     style="font-size: 1.5em">{{item.quantity}}</span>
-                                                <i class="fa fa-plus-circle text-warning mx-2"
+                                                <i (click)="incrementItemQuantity(item)"
+                                                    class="fa fa-plus-circle text-warning mx-2"
                                                     style="cursor: pointer; font-size: 2em;"></i>
                                             </div>
                                         </td>
@@ -61,14 +63,26 @@
                                                 {{item.price * item.quantity | currency}}
                                             </strong> </td>
                                         <td class="align-middle text-center">
-                                            <a class="text-danger"><i class="fa fa-trash"
-                                                    style="font-size: 2em;"></i></a>
+                                            <a class="text-danger"><i (click)="removeBasketItem(item)"
+                                                    class="fa fa-trash"
+                                                    style=" cursor: pointer; font-size: 2em;"></i></a>
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-6 offset-6">
+                        <app-order-totals></app-order-totals>
+                        <a routerLink="/checkout" class="btn btn-outline-primary py-2 btn-block">
+                            To Checkout ..
+                        </a>
+                    </div>
+
+
                 </div>
 
             </div>
